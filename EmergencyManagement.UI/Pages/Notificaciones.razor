@@ -1,0 +1,40 @@
+﻿@page "/notificaciones"
+@inject NavigationManager Navigation
+@implements IAsyncDisposable
+
+<h3>Notificaciones</h3>
+
+<ul id="notificaciones"></ul>
+
+@code {
+    private HubConnection? hubConnection;
+
+    protected override async Task OnInitializedAsync()
+    {
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("/incidenteHub"))
+            .Build();
+
+        hubConnection.On<string>("RecibirNotificacion", (mensaje) =>
+        {
+            // Maneja la notificación
+            InvokeAsync(() =>
+            {
+                var ul = document.getElementById("notificaciones");
+                var li = document.createElement("li");
+                li.textContent = mensaje;
+                ul.appendChild(li);
+            });
+        });
+
+        await hubConnection.StartAsync();
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection is not null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+}

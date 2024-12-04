@@ -1,0 +1,26 @@
+﻿@using MudBlazor;
+
+@inject IncidenteService IncidenteService
+<h3>ListarIncidentes</h3>
+
+<MudTable Items="Incidentes">
+    <HeaderContent>
+        <MudTh>Título</MudTh>
+        <MudTh>Estado</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Titulo</MudTd>
+        <MudTd>@context.Estado</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    
+    private List<IncidenteDTO> Incidentes;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Incidentes = await IncidenteService.ObtenerIncidentesAsync();
+    }
+
+}

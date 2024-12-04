@@ -1,0 +1,69 @@
+﻿@page "/incidentes"
+@using EmergencyManagement.Shared
+
+@inject HttpClient Http
+
+<h3>Incidentes</h3>
+
+<button @onclick="CreateIncidente">Crear Incidente</button>
+
+<table>
+    <thead>
+        <tr>
+            <th>Título</th>
+            <th>Descripción</th>
+            <th>Fecha</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var incidente in incidentes)
+        {
+            <tr>
+                <td>@incidente.Titulo</td>
+                <td>@incidente.Descripcion</td>
+                <td>@incidente.FechaHoraInicio</td>
+                <td>
+                    <button @onclick="() => EditIncidente(incidente.IncidenteId)">Editar</button>
+                    <button @onclick="() => DeleteIncidente(incidente.IncidenteId)">Eliminar</button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@code {
+    private List<IncidenteDTO> incidentes = new List<IncidenteDTO>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        incidentes = await Http.GetFromJsonAsync<List<IncidenteDTO>>("https://localhost:5001/api/incidente");
+    }
+
+    private async Task CreateIncidente()
+    {
+        var newIncidente = new IncidenteDTO { Titulo = "Nuevo Incidente", Descripcion = "Descripción", FechaHoraInicio = DateTime.Now };
+        await Http.PostAsJsonAsync("https://localhost:5001/api/incidente", newIncidente);
+        incidentes.Add(newIncidente);
+    }
+
+    private async Task EditIncidente(Guid id)
+    {
+        var incidente = incidentes.FirstOrDefault(i => i.IncidenteId == id);
+        if (incidente != null)
+        {
+            incidente.Titulo = "Incidente Editado"; // Simula una edición
+            await Http.PutAsJsonAsync($"https://localhost:5001/api/incidente/{id}", incidente);
+        }
+    }
+
+    private async Task DeleteIncidente(Guid id)
+    {
+        var incidente = incidentes.FirstOrDefault(i => i.IncidenteId == id);
+        if (incidente != null)
+        {
+            await Http.DeleteAsync($"https://localhost:5001/api/incidente/{id}");
+            incidentes.Remove(incidente);
+        }
+    }
+}

@@ -1,0 +1,22 @@
+﻿@using MudBlazor
+
+<MudDialog @bind-IsVisible="IsOpen">
+    <DialogContent>
+        @ChildContent
+    </DialogContent>
+    <DialogActions>
+        <MudButton OnClick="CerrarModal">Cerrar</MudButton>
+    </DialogActions>
+</MudDialog>
+
+
+@code
+{
+    private bool IsOpen { get; set; }
+    public RenderFragment? ChildContent { get; set; }
+
+    private async Task CerrarModal()
+    {
+        IsOpen = false;
+    }
+}

@@ -1,0 +1,22 @@
+﻿<h3>Incident</h3>
+@inject IncidentApiService IncidentService
+
+<MudTable Items="incidents">
+    <HeaderContent>
+        <MudTh>Title</MudTh>
+        <MudTh>Description</MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd>@context.Title</MudTd>
+        <MudTd>@context.Description</MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private List<IncidentDto> incidents = new();
+
+    protected override async Task OnInitializedAsync()
+    {
+        incidents = (await IncidentService.GetAllIncidentsAsync()).ToList();
+    }
+}

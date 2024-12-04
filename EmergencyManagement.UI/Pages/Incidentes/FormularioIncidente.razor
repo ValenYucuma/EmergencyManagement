@@ -1,0 +1,22 @@
+﻿@using EmergencyManagement.Shared
+@using EmergencyManagement.UI.Data.Services
+@using MudBlazor
+
+@inject IncidenteService IncidenteService
+<h3>FormularioIncidente</h3>
+<MudForm>
+    <MudTextField Label="Título" @bind-Value="Incidente.Titulo" />
+    <MudText Label="Descripción" @bind-Value="Incidente.Descripcion" />
+    <MudButton OnClick="Guardar">Guardar</MudButton>
+</MudForm>
+
+@code {
+
+    private IncidenteDTO Incidente = new();
+
+    private async Task Guardar()
+    {
+        await IncidenteService.CrearIncidenteAsync(Incidente);
+    }
+
+}
